@@ -5,6 +5,7 @@ import Data.Char
 data Ty = TBool
         | TNum
         | TFun Ty Ty 
+        | TPares Ty Ty
         deriving (Show, Eq)
 
 data Expr = BTrue
@@ -68,7 +69,7 @@ lexer :: String -> [Token]
 lexer [] = [] 
 lexer ('+':cs) = TokenAdd : lexer cs 
 lexer ('\\':cs) = TokenLam : lexer cs
-lexer ('-':cs) = TokenSub : lexer cs
+
 lexer ('*':cs) = TokenMul : lexer cs
 lexer (':':cs) = TokenColon : lexer cs
 lexer ('(':cs) = TokenLParen : lexer cs
@@ -108,6 +109,7 @@ lexSymbol cs = case span isToken cs of
                    (">", rest) -> TokenMaior     : lexer rest
                    (">=", rest) -> TokenMrIgual    : lexer rest
                    ("||", rest) -> TokenOR    : lexer rest
+                   ("-", rest ) ->  TokenSub : lexer rest
                    
                    
                    _ -> error "Lexical error: símbolo inválido!"

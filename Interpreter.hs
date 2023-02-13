@@ -29,13 +29,14 @@ isvalue BTrue = True
 isvalue BFalse = True
 isvalue (Num _) = True
 isvalue (Lam _ _ _) = True 
+isvalue (Pares 1 _ _) = False
+isvalue (Pares 2 _ _) = False
+isvalue (Pares _ _ _) = True
 isvalue _ = False 
+
 
 alti :: Expr -> Int
 alti (Num x) = x
-
-
-
 
 step :: Expr -> Maybe Expr 
 step (Add (Num n1) (Num n2)) = Just (Num (n1 + n2))
@@ -91,19 +92,24 @@ step (App e1@(Lam x t b) e2) | isvalue e2 = Just (subst x e2 b)
                              | otherwise = case step e2 of 
                                              Just e2' -> Just (App e1 e2')
                                              _        -> Nothing 
-
+-- v =x e1 = valor e2 = resultado
 step (Let v e1 e2) | isvalue e1 = Just (subst v e1 e2)
                    | otherwise = case step e1 of
                                   Just e1' -> Just (Let v e1' e2)
                                   _        -> Nothing 
+
+step (Pares e e1 e2) | isvalue e1 && isvalue e2 = case e of
+                                                   1 -> Just e1
+                                                   2 -> Just e2
+                                                   _ -> Just (Pares e e1 e2)
+                      |  isvalue e1 = case step e2 of
+                                        Just e2' -> Just (Pares e e1 e2')
+                                        _        -> Nothing
+                      |  isvalue e2 = case step e1 of
+                                        Just e1' -> Just (Pares e e2 e1')
+                                        _        -> Nothing
   
   
-  -- if isvalue e1 then 
-  --                       Just (subst v e1 e2)
-  --                     else
-  --                       case step e1 of 
-  --                           Just e1' -> Just (Let v e1' e2)
-  --                           _        -> Nothing
 
 step (App e1 e2) = case step e1 of 
                      Just e1' -> Just (App e1' e2)

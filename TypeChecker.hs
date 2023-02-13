@@ -47,6 +47,11 @@ typeof ctx (Let v e1 e2) = case (typeof ctx e1) of
                               _       -> Nothing
 
 
+typeof ctx (Pares e e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
+                           (Just t1, Just t2) -> Just (TPares t1 t2)
+                           _                       -> Nothing                             
+
+
 typeof ctx (If e e1 e2) = 
     case typeof ctx e of 
       Just TBool -> case (typeof ctx e1, typeof ctx e2) of 
