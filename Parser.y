@@ -19,6 +19,8 @@ import Lexer
     '>='        { TokenMrIgual }
     '<'        { TokenMenor }
     "=="        { TokenEq }
+    '||'        { TokenOR }
+    not        { TokenNot }
     true        { TokenTrue }
     false       { TokenFalse }
     if          { TokenIf }
@@ -33,12 +35,12 @@ import Lexer
     Bool        { TokenBoolean }
     Number      { TokenNumber }
 
-%nonassoc if then else
+%nonassoc if then else 
 %left '+' '-'
 %left '*'
 %left "&&"
 %left "=="
-%left '>' '<''=' '>='
+%left '>' '<''=' '>=' '||'
 
 %% 
 
@@ -49,6 +51,8 @@ Exp     : num                        { Num $1 }
         | Exp '+' Exp                { Add $1 $3 }
         | Exp '>' Exp                { Maior $1 $3 }
         | Exp '<' Exp                { Menor $1 $3 }
+        | Exp '||' Exp                { OR $1 $3 }
+        | not Exp                    { Not $2 }
         | Exp '=' Exp                { Igual $1 $3 }
         | Exp '>=' Exp                { MrIgual $1 $3 }
         | Exp "&&" Exp               { And $1 $3 }

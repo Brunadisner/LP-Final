@@ -33,6 +33,19 @@ typeof ctx (MrIgual e1 e2) = case (typeof ctx e1, typeof ctx e2) of
 typeof ctx (And e1 e2) = case (typeof ctx e1, typeof ctx  e2) of 
                            (Just TBool, Just TBool) -> Just TBool 
                            _                         -> Nothing
+typeof ctx (OR e1 e2) = case (typeof ctx e1, typeof ctx  e2) of 
+                           (Just TBool, Just TBool) -> Just TBool 
+                           _                         -> Nothing
+
+typeof ctx (Not e1) = case (typeof ctx e1) of 
+                           (Just TBool) -> Just TBool 
+                           _                         -> Nothing                           
+
+typeof ctx (Let x t1 t2) = case (typeof ctx t1) of
+                            Just t1' -> Just typeof ((x,t1'):ctx) t2
+                            -> Nothing
+
+
 typeof ctx (If e e1 e2) = 
     case typeof ctx e of 
       Just TBool -> case (typeof ctx e1, typeof ctx e2) of 
