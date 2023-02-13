@@ -1,0 +1,23 @@
+//SOMA:
+// 2 + 3
+
+//SUBTRAÇÃO:
+// 5 - 2
+
+//MULTIPLICAÇÃO:
+//2 * 3
+
+//MAIOR IGUAL:
+//if 2 >= 3 then 1 else 2
+
+//OR:
+//if true || false then 1 else 2
+
+//NOT: 
+//Not(true)
+
+
+(\x:Number -> if x == 1 
+              then x + 10
+              else x + 20
+) 2

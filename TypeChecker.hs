@@ -41,9 +41,10 @@ typeof ctx (Not e1) = case (typeof ctx e1) of
                            (Just TBool) -> Just TBool 
                            _                         -> Nothing                           
 
-typeof ctx (Let x t1 t2) = case (typeof ctx t1) of
-                            Just t1' -> Just typeof ((x,t1'):ctx) t2
-                            -> Nothing
+typeof ctx (Let v e1 e2) = case (typeof ctx e1) of 
+                              Just t1 -> let ctx' = (v, t1) : ctx
+                                          in typeof ctx' e2
+                              _       -> Nothing
 
 
 typeof ctx (If e e1 e2) = 

@@ -12,6 +12,7 @@ import Lexer
     num         { TokenNum $$ }
     '+'         { TokenAdd }
     '-'         { TokenSub }
+    ','         { TokenVr }
     '*'         { TokenMul }
     "&&"        { TokenAnd }
     '>'        { TokenMaior }
@@ -21,6 +22,8 @@ import Lexer
     "=="        { TokenEq }
     '||'        { TokenOR }
     not        { TokenNot }
+    let        {TokenLet}
+    in          {TokenIn}
     true        { TokenTrue }
     false       { TokenFalse }
     if          { TokenIf }
@@ -40,7 +43,7 @@ import Lexer
 %left '*'
 %left "&&"
 %left "=="
-%left '>' '<''=' '>=' '||'
+%left '>' '<''=' '>=' '||' ','
 
 %% 
 
@@ -63,6 +66,8 @@ Exp     : num                        { Num $1 }
         | Exp Exp                    { App $1 $2 }
         | '(' Exp ')'                { Paren $2 }
         | Exp "==" Exp               { Eq $1 $3 }
+        | let var '=' Exp in Exp     {Let $2 $4 $6}
+        | '(' Exp ',' Exp ')'        {Pares $2 $4}
 
 Type    : Bool                       { TBool }
         | Number                     { TNum }

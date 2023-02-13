@@ -92,10 +92,18 @@ step (App e1@(Lam x t b) e2) | isvalue e2 = Just (subst x e2 b)
                                              Just e2' -> Just (App e1 e2')
                                              _        -> Nothing 
 
-step (Let x t b)           | isvalue e1 = Just (subst x t b)
-                             | otherwise = case  step e2 of 
-                                            Just x -> Just (Let step e1) e2
-                                                  -> Nothing 
+step (Let v e1 e2) | isvalue e1 = Just (subst v e1 e2)
+                   | otherwise = case step e1 of
+                                  Just e1' -> Just (Let v e1' e2)
+                                  _        -> Nothing 
+  
+  
+  -- if isvalue e1 then 
+  --                       Just (subst v e1 e2)
+  --                     else
+  --                       case step e1 of 
+  --                           Just e1' -> Just (Let v e1' e2)
+  --                           _        -> Nothing
 
 step (App e1 e2) = case step e1 of 
                      Just e1' -> Just (App e1' e2)

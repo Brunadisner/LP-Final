@@ -27,6 +27,7 @@ data Expr = BTrue
           | OR Expr Expr
           | Not Expr
           | Let String Expr Expr
+          | Pares Int Expr Expr
           deriving (Show, Eq)
 
 data Token = TokenTrue 
@@ -55,7 +56,9 @@ data Token = TokenTrue
            | TokenMenor
            | TokenIgual
            | TokenMrIgual
-           
+           | TokenPares
+           | TokenIn
+           | TokenVr
            deriving Show 
 
 isToken :: Char -> Bool
@@ -70,6 +73,7 @@ lexer ('*':cs) = TokenMul : lexer cs
 lexer (':':cs) = TokenColon : lexer cs
 lexer ('(':cs) = TokenLParen : lexer cs
 lexer (')':cs) = TokenRParen : lexer cs
+lexer (',':cs) = TokenVr : lexer cs
 lexer (c:cs) | isSpace c = lexer cs 
              | isDigit c = lexNum (c:cs)
              | isAlpha c = lexKW (c:cs)
@@ -89,7 +93,9 @@ lexKW cs = case span isAlpha cs of
              ("else", rest)  -> TokenElse : lexer rest 
              ("Bool", rest)  -> TokenBoolean : lexer rest 
              ("Number", rest)  -> TokenNumber : lexer rest 
-             ("Let", rest)  -> TokenNumber : lexer rest 
+             ("let", rest)  -> TokenLet : lexer rest 
+             ("in", rest)  -> TokenIn : lexer rest 
+             ("not", rest) -> TokenNot   : lexer rest
              (var, rest)     -> TokenVar var : lexer rest 
 
 lexSymbol :: String -> [Token]
@@ -102,6 +108,6 @@ lexSymbol cs = case span isToken cs of
                    (">", rest) -> TokenMaior     : lexer rest
                    (">=", rest) -> TokenMrIgual    : lexer rest
                    ("||", rest) -> TokenOR    : lexer rest
-                   ("not", rest) -> TokenNot   : lexer rest
+                   
                    
                    _ -> error "Lexical error: símbolo inválido!"
